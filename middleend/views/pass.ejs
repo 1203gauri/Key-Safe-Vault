@@ -1,0 +1,187 @@
+<%- include('header.ejs') %>
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Form styling */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Input fields styling */
+        button,
+        input[type="text"],
+        input[type="submit"],
+        input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            /* Include padding in width calculation */
+        }
+
+        /* Label styling */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        /* Error message styling */
+        #error {
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+
+        /* Button styling */
+        button,
+        input[type="submit"],
+        input[type="button"] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover,
+        input[type="submit"]:hover,
+        input[type="button"]:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Hide/Show button styling */
+        #show-button,
+        #hide-button {
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+
+        #show-button:hover,
+        #hide-button:hover {
+            background-color: #286090;
+            border-color: #204d74;
+        }
+
+        /* Edit button styling */
+        #edit-button {
+            background-color: #f0ad4e;
+            border-color: #eea236;
+        }
+
+        #edit-button:hover {
+            background-color: #ec971f;
+            border-color: #d58512;
+        }
+
+        /* Card container styling */
+        #data {
+            background-color: #e7e7e7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* Header styling */
+        h1,
+        h2 {
+            color: #333;
+        }
+    </style>
+    <h1>Create Password:</h1>
+    <form action="/pass" method="post">
+        <div>
+            <label>Name:</label>
+            <input type="text" name="name" />
+        </div>
+        <div>
+            <label>Password:</label>
+            <input type="text" name="password" />
+        </div>
+        <div>
+            <label>Username:</label>
+            <input type="text" name="username" />
+        </div>
+        <div>
+            <label>Website:</label>
+            <input type="text" name="website" />
+        </div>
+        <div>
+            <input type="submit" value="Create" />
+        </div>
+    </form>
+    <div id="error">
+        <%= error %>
+    </div>
+
+    <h1>
+        Passwords
+    </h1>
+    <% if ( data !=null) { %>
+        <% for (let i=0; i < data.length; i++) { %>
+            <h2>
+                Password
+                <%= i + 1 %>
+            </h2>
+            <div id="data-<%= i+1 %>">
+                <p>Name: <%= data[i].name %>
+                </p>
+                <p>Username: <%= data[i].username %>
+                </p>
+                <p class="password" id="pass-<%= i+1 %>">
+                </p>
+                <p>Website: <%= data[i].website %>
+                </p>
+            </div>
+            <form id='editor-<%= i+1 %>' action="/pass" method="post" style="display: none;">
+                <div>
+                    <label>Name:</label>
+                    <input type="text" name="name" value="<%= data[i].name %>" />
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input type="text" name="password" value="" />
+                </div>
+                <div>
+                    <label>Username:</label>
+                    <input type="text" name="username" value="<%= data[i].username %>" />
+                </div>
+                <div>
+                    <label>Website:</label>
+                    <input type="text" name="website" value="<%= data[i].website%>" />
+                </div>
+                <div>
+                    <input type="hidden" name="method" value="PUT" />
+                    <input type="hidden" name="id" value="<%= data[i].id %>">
+                    <input type="submit" value="Submit" />
+                </div>
+                <div>
+                    <input type="button" onclick="hideEditor(<%= i+1 %>);" value="Cancel" />
+                </div>
+
+            </form>
+            <button id="show-button-<%= i+1 %>" onclick="showPass(<%= i+1 %>,<%= data[i].id %>);">Show</button>
+            <button id="hide-button-<%= i+1 %>" style="display: none;" onclick="hidePass();">Hide</button>
+            <button id="edit-button-<%= i+1 %>" onclick="showEditor(<%= i+1 %>);">Edit</button>
+            <form action="/pass" method="POST">
+                <input type="hidden" name="method" value="DELETE" />
+                <input type="hidden" name="id" value="<%= data[i].id %>">
+                <input type="submit" value="Delete">
+            </form>
+            <% } %>
+                <% } else { %>
+                    <h2>No Data Found</h2>
+                    <% } %>
+
+                        <%- include('footer.ejs') %>
