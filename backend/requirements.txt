@@ -1,0 +1,5 @@
+django
+djangorestframework
+psycopg
+psycopg2-binary
+cryptography
